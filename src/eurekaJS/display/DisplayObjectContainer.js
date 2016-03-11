@@ -110,9 +110,11 @@ this.DisplayObjectContainer = ns.DisplayObjectContainer = class DisplayObjectCon
     return this._displayList.length;
   }
 
+  /*
   _position (ctx) {
     ctx.translate(this.x, this.y);
   }
+  */
 
   _render (ctx, colors) {
     for (var i = 0; i < this._displayList.length; ++i) {

@@ -18,6 +18,13 @@ this.DisplayObject = ns.DisplayObject = class DisplayObject extends eurekaJS.eve
     this.height = height || 0;
     this.visible = visible || true;
 
+    this.scaleX = 1;
+    this.scaleY = 1;
+
+    this.alpha = 1;
+
+    this.rotation = 0;
+
     this._stage = null;
     this._parent = null;
   }
@@ -52,5 +59,13 @@ this.DisplayObject = ns.DisplayObject = class DisplayObject extends eurekaJS.eve
     this._stage = stage;
     if (stage) this.dispatchEvent(new CustomEvent('addedToStage'));
     else       this.dispatchEvent(new CustomEvent('removedFromStage'));
+  }
+
+  _position (ctx) {
+    ctx.translate(this.x, this.y);
+    ctx.rotate(this.rotation*(Math.PI/180));
+    ctx.scale(this.scaleX, this.scaleY);
+
+    ctx.globalAlpha = this.alpha;
   }
 }

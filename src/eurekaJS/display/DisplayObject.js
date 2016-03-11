@@ -44,7 +44,6 @@ this.DisplayObject = ns.DisplayObject = class DisplayObject extends eurekaJS.eve
     // Setup the parent container
     this._parent = container;
 
-    // 
     if (container) this.dispatchEvent(new CustomEvent('added'));
     else           this.dispatchEvent(new CustomEvent('removed'));
   }

@@ -9,8 +9,12 @@ this.Sprite = ns.Sprite = class Sprite extends ns.DisplayObjectContainer {
     this.graphics = new ns.Graphics();
   }
 
-  _render (ctx) {
-    super._render(ctx);
-    this.graphics._render(ctx);
+  _render (ctx, colors) {
+    super._render(ctx, colors);
+    this.graphics._render(ctx, (colors) ? colors.index : undefined);
+    if (colors) {
+      colors[colors.index] = this;
+      colors.index++;
+    }
   }
 }

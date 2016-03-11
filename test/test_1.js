@@ -21,6 +21,8 @@ s.graphics.endFill();
 s.graphics.beginFill('#0000FF');
 s.graphics.drawCircle(350, 150, 50);
 s.graphics.endFill();
+
+
 var s2 = new Sprite();
 
 s2.graphics.beginFill('#0F0');
@@ -31,8 +33,10 @@ Stage.addChild(s);
 
 Stage.addChild(s2);
 
+
 Stage.addEventListener('click', function (e) {
   var s = new Sprite();
+
   s.graphics.beginFill('#00F');
   s.graphics.lineStyle(3);
   s.graphics.drawCircle(e.mouseX, e.mouseY, 10);

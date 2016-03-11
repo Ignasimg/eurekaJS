@@ -15,8 +15,16 @@ ns.NativeCanvas = class NativeCanvas {
     return this.element.width;
   }
 
+  set width (w) {
+    this.element.width = w;
+  }
+
   get height () {
     return this.element.height;
+  }
+
+  set height (h) {
+    this.element.height = h;
   }
 
   get left () {

@@ -97,13 +97,13 @@ this.DisplayObjectContainer = ns.DisplayObjectContainer = class DisplayObjectCon
     return this._displayList.length;
   }
 
-  _render (ctx) {
+  _render (ctx, colors) {
     ctx.translate(this.x, this.y);
     for (var i = 0; i < this._displayList.length; ++i) {
       var displayObject = this._displayList[i];
       if (displayObject.visible) {
         ctx.save();
-        this._displayList[i]._render(ctx);
+        this._displayList[i]._render(ctx, colors);
         ctx.restore();
       }
     }

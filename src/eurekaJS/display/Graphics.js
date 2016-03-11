@@ -18,16 +18,29 @@ function _hexToRGB (hex) {
   } : null;
 }
 
-function _applyCmd (ctx, cmd) {
+function _intToRGB (int) {
+  return int ? {
+    R: (int >> 16) & 0xFF,
+    G: (int >> 8) & 0xFF,
+    B: int & 0xFF,
+  } : undefined;
+}
+
+function _applyCmd (ctx, cmd, color) {
+  color = _intToRGB(color);
+
+  if (color) 
+    color = 'rgb('+color.R+','+color.G+','+color.B+')';
+
   switch (cmd[0]) {
     case 'lW' :
       ctx.lineWidth = cmd[1];
       break;
     case 'sS' :
-      ctx.strokeStyle = cmd[1];
+      ctx.strokeStyle = color || cmd[1];
       break;
     case 'fS' :
-      ctx.fillStyle = cmd[1];
+      ctx.fillStyle = color || cmd[1];
       break;
     case 'bP' :
       ctx.beginPath();
@@ -126,9 +139,9 @@ this.Graphics = ns.Graphics = class Graphics {
     this._cmd.push(['a', x, y, radius, 0, 2*Math.PI]);
   }
 
-  _render (ctx) {
+  _render (ctx, color) {
     for (var i = 0; i < this._cmd.length; ++i) {
-      _applyCmd(ctx, this._cmd[i]);
+      _applyCmd(ctx, this._cmd[i], color);
     }
     if (this._shapeStarted) {
       _applyCmd(ctx, ['cP']);

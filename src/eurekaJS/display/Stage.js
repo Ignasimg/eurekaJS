@@ -18,10 +18,16 @@ this.Stage = ns.Stage = class Stage extends ns.DisplayObjectContainer {
     this.color = color || '#FFFFFF';
     this.frameRate = fps || 30;
 
-    console.info("Stage running at", this.frameRate, "fps");
-
     var mouseEvents = ['click', 'contextmenu', 'dblclick', 'mousedown', 'mouseenter', 'mouseleave', 'mousemove', 'mouseover', 'mouseout', 'mouseup'];
     mouseEvents.forEach(event => this._canvas.addEventListener(event, this._mouseHandler.bind(this)));
+
+    this._mouseCanvas = new eurekaJS.native.NativeCanvas();
+    this._mouseCanvas.width = this._canvas.width;
+    this._mouseCanvas.height = this._canvas.height;
+    this._mouseCanvasCtx = this._mouseCanvas.context;
+    this._mouseCanvasCtx.translate(0.5, 0.5);
+
+    console.info("Stage running at", this.frameRate, "fps");
   }
 
   _clear () {
@@ -74,5 +80,17 @@ this.Stage = ns.Stage = class Stage extends ns.DisplayObjectContainer {
     event.mouseY = Math.floor(event.clientY - this._canvas.top);
 
     this.dispatchEvent(event);
+
+    this._mouseCanvasCtx.clearRect(0, 0, this._mouseCanvas.width, this._mouseCanvas.height);
+    
+    var colors = {index: 1, 0: this};
+    super._render(this._mouseCanvasCtx, colors);
+    
+    var cc = this._mouseCanvasCtx.getImageData(event.mouseX, event.mouseY, 1, 1).data;
+    var choosen_color = (cc[0] << 16) + (cc[1] << 8) + (cc[2]);
+
+    if (choosen_color !== 0) {
+      colors[choosen_color].dispatchEvent(event);
+    }
   }
 }

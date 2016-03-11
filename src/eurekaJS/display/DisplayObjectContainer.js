@@ -29,7 +29,20 @@ this.DisplayObjectContainer = ns.DisplayObjectContainer = class DisplayObjectCon
   }
 
   contains (displayObject) {
-    return (this._displayList.indexOf(displayObject) != -1);
+    if (displayObject === this) return true;
+    for (var i = 0; i < this._displayList.length; ++i) {
+      var isContainer = displayObject instanceof eurekaJS.display.DisplayObjectContainer;
+      var contains = false;
+      if (isContainer) {
+        contains = this._displayList[i].contains(displayObject);
+      }
+      else {
+        contains = (this._displayList[i] === displayObject);
+      }
+      if (contains) return true;
+    }
+    return false;
+    //return (this._displayList.indexOf(displayObject) != -1);
   }
 
   getChildAt (index) {

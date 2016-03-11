@@ -75,11 +75,13 @@ this.Stage = ns.Stage = class Stage extends ns.DisplayObjectContainer {
     return this._canvas;
   }
 
-  _mouseHandler (event) {
-    event.mouseX = Math.floor(event.clientX - this._canvas.left);
-    event.mouseY = Math.floor(event.clientY - this._canvas.top);
+  _mouseHandler (e) {
+    var event = {type: e.type}; //new CustomEvent()
 
-    this.dispatchEvent(event);
+    event.mouseX = Math.floor(e.clientX - this._canvas.left);
+    event.mouseY = Math.floor(e.clientY - this._canvas.top);
+
+    //this.dispatchEvent(event);
 
     this._mouseCanvasCtx.clearRect(0, 0, this._mouseCanvas.width, this._mouseCanvas.height);
     
@@ -87,10 +89,157 @@ this.Stage = ns.Stage = class Stage extends ns.DisplayObjectContainer {
     super._render(this._mouseCanvasCtx, colors);
     
     var cc = this._mouseCanvasCtx.getImageData(event.mouseX, event.mouseY, 1, 1).data;
-    var choosen_color = (cc[0] << 16) + (cc[1] << 8) + (cc[2]);
+    var choosenColor = (cc[0] << 16) + (cc[1] << 8) + (cc[2]);
 
+    /*
     if (choosen_color !== 0) {
-      colors[choosen_color].dispatchEvent(event);
+      colors[choosenColor].dispatchEvent(event);
     }
+    */
+    event.target = colors[choosenColor];
+
+    event.phase = 0;
+
+    (function recursiveCaptureTargetBubble (currentTarget, event) {
+      // INV :: currentTarget is THE target (event.target)
+      //        or an ancestor of it.
+
+      event.currentTarget = currentTarget;
+      // If the current target is THE target
+      if (currentTarget === event.target) {
+        // We switch to target phase
+        event.phase = 1;
+        currentTarget.dispatchEvent(event);
+        return ;
+      }
+      // If the current target is not THE target
+      else {
+        // Send the event in capture phase.
+        currentTarget.dispatchEvent(event);
+        // For each child of the target
+        for (var i = 0; i < currentTarget._displayList.length; ++i) {
+          var child = currentTarget._displayList[i];
+          // If child is the target or contains the target.
+          if (child === event.target ||
+             (child.contains && child.contains(event.target))) {
+            // advance recursively.
+            recursiveCaptureTargetBubble(child, event);
+            // when we come back the target phase already took place.
+            event.phase = 2;
+            // reset the right event.currentTarget.
+            event.currentTarget = currentTarget;
+            // dispatch the event in the bubble phase
+            currentTarget.dispatchEvent(event);
+            return ;
+          }
+        }
+      }
+    })(this, event);
+
+
+    /*
+    (function recursiveCaptureTargetBubble (currentTarget, event) {
+      // INV :: currentTarget is THE target (event.target)
+      //        or an ancestor of it.
+
+      event.currentTarget = currentTarget;
+      // If we are in the capture phase
+      if (event.phase === 0) {
+        // If the current target is THE target
+        if (currentTarget === event.target) {
+          // We switch to target phase
+          event.phase = 1;
+          recursiveCaptureTargetBubble(currentTarget, event);
+        }
+        // If the current target is not THE target
+        else {
+          // Send the event in capture phase.
+          currentTarget.dispatchEvent(event);
+          // For each child of the target
+          for (var i = 0; i < currentTarget._displayList.length; ++i) {
+            var child = currentTarget._displayList[i];
+            // If child is displayObjectContainer
+            if (child instanceof eurekaJS.display.DisplayObjectContainer) {
+              // If child contains THE target
+              if (child.contains(event.target)) {
+                // recursively check it's children
+                recursiveCaptureTargetBubble(child, event);
+                break;
+              }
+            }
+            // If the child is not displayObjectContainer
+            else {
+              // check whether it's THE target
+              if (child === event.target) {
+                // addvance
+                recursiveCaptureTargetBubble(child, event);
+                break;
+              }
+            }
+          }
+        }
+      }
+
+
+
+      if (event.phase === 0) {
+        if (displayObject === event.target) {
+          event.phase = 1;
+          return recursiveCaptureTargetBubble(displayObject, event);
+        }
+        for (var i = 0; i < displayObject._displayList.length; ++i) {
+          var isContainer = (displayObject._displayList[i] instanceof eurekaJS.display.DisplayObjectContainer)
+          if (isContainer) {
+            if (displayObject._displayList.contains(event.target)) {
+              
+              parent.dispatchEvent(event);
+              break;
+            }
+          }
+          else {
+
+          }
+
+          
+        }
+      }
+      else if (event.phase === 1) {
+
+      }
+      else {
+
+      }
+    })(this, event);
+*/
+    /*
+    // Capturing phase
+    event.phase = 0;
+
+    var parent = this;
+    do {
+      for (var i = 0; i < parent._displayList.length; ++i) {
+        if (parent.contains(event.target)) {
+          parent = parent._displayList[i];
+          parent.dispatchEvent(event);
+          break;
+        }
+      }
+    }
+    while ((parent != event.target) && 
+          (parent instanceof eurekaJS.display.DisplayObjectContainer));
+
+    // At target phase
+    event.phase = 1;
+    
+    parent.dispatchEvent(event);
+
+    // Bubbling phase
+    event.phase = 2;
+
+    do {
+      parent.parent = 
+    } while (parent != this);
+
+    */
   }
 }

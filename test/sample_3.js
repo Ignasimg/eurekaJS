@@ -75,7 +75,7 @@ map.addChild(c);
 
 Stage.color = "#000000";
 
-Stage.addEventListener('mousemove', function(e) {
+Stage.addEventListener('mousemove', function (e) {
   var x = e.mouseX - 200 - 32;
   var y = e.mouseY - 200 - 16;
 

@@ -10,11 +10,13 @@ this.Sprite = ns.Sprite = class Sprite extends ns.DisplayObjectContainer {
   }
 
   _render (ctx, colors) {
-    super._render(ctx, colors);
+    // First have to render the own content then the children.
     this.graphics._render(ctx, (colors) ? colors.index : undefined);
     if (colors) {
       colors[colors.index] = this;
       colors.index++;
     }
+
+    super._render(ctx, colors);
   }
 }

@@ -19,14 +19,16 @@ var f = new Circle(50, '#FF00FF');  f.name = 'f';
 var g = new Circle(40, '#FFFFFF');  g.name = 'g';
 Stage.name = "Stage";
 
-// I really think this is the wrong order...
-g.addChild(f);
-f.addChild(e);
-e.addChild(d);
-d.addChild(c);
-c.addChild(b);
-b.addChild(a);
-Stage.addChild(g);
+a.addChild(b);
+b.addChild(c);
+c.addChild(d);
+d.addChild(e);
+e.addChild(f);
+f.addChild(g);
+Stage.addChild(a);
+
+a.x = 200;
+a.y = 300;
 
 function whoAmI (e) {
   console.info('clicked ::', e.target.name);
@@ -38,5 +40,3 @@ function whoAmI (e) {
 [a, b, c, d, e, f, g, Stage].forEach(function (o) {
   o.addEventListener('click', whoAmI, EventPhase.CAPTURING_PHASE | EventPhase.AT_TARGET | EventPhase.BUBBLING_PHASE);
 })
-
-console.log(Stage.contains(b));

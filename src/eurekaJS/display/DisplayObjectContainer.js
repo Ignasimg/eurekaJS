@@ -31,7 +31,7 @@ this.DisplayObjectContainer = ns.DisplayObjectContainer = class DisplayObjectCon
   contains (displayObject) {
     if (displayObject === this) return true;
     for (var i = 0; i < this._displayList.length; ++i) {
-      var isContainer = displayObject instanceof eurekaJS.display.DisplayObjectContainer;
+      var isContainer = this._displayList[i] instanceof eurekaJS.display.DisplayObjectContainer;
       var contains = false;
       if (isContainer) {
         contains = this._displayList[i].contains(displayObject);

@@ -1,5 +1,7 @@
 import "eurekaJS/display/DisplayObject.js";
+import "eurekaJS/native/NativeCanvas.js";
 import "eurekaJS/text/TextBaseline.js";
+import "eurekaJS/text/TextAlign.js";
 
 var ns = namespace("eurekaJS.text");
 
@@ -7,27 +9,53 @@ this.TextField = ns.TextField = class TextField extends DisplayObject {
   constructor () {
     super();
     
-    this.text = "";
-    this._color = 0x000000;
+    this._text = "";
+    this._color = '#000000';
     this._baseline = eurekaJS.text.TextBaseline.TOP;
-    this._align = 'left';
+    this._align = eurekaJS.text.TextAlign.LEFT;
+
+    this._size = 60;
+
+    this._width = 0;
+
+    this._helperCanvas = new eurekaJS.native.NativeCanvas();
+    this._helperCanvasCtx = this._helperCanvas.context;
   }
 
-  /*
-  _position (ctx) {
-  //  ctx.translate(this.x, this.y);
-  }
-  */
+  _render (ctx, colors) {
+    if (colors) {
+      var color = colors.index;
+      colors[colors.index] = this;
+      colors.next();
+    }
 
-
-  _render (ctx, color) {
-    ctx.font = "30px Comic Sans MS";
-    ctx.fillStyle = "red";
-    ctx.textAlign = "left";
+    ctx.font = this._size+"px Comic Sans MS";
+    ctx.fillStyle = color || this._color;
+    ctx.textAlign = this._align;
     ctx.textBaseline = this._baseline;
-    ctx.fillText(this.text, this.x, this.y); 
+    ctx.fillText(this._text, 0, 0);
+  }
 
-    //    ctx.measureText();
+  get size () {
+    return this._size;
+  }
+
+  set size (size) {
+    this._size = size;
+    this._measureWidth();
+  }
+
+  get text () {
+    return this._text;
+  }
+
+  set text (text) {
+    this._text = text;
+    this._measureWidth();
+  }
+
+  get textWidth () {
+    return this._width;
   }
 
   set baseline (v) {
@@ -42,9 +70,29 @@ this.TextField = ns.TextField = class TextField extends DisplayObject {
     this._color = v;
   }
 
+  get textAlign () {
+    return this._align;
+  }
+
+  set textAlign (v) {
+    this._align = v;
+  }
+
+  get textBaseline () {
+    return this._baseline;
+  }
+
+  set textBaseline (v) {
+    this._baseline = v;
+  }
+
   appendText (newText) {
     this.text = this.text + newText;
   }
 
+  _measureWidth () {
+    this._render(this._helperCanvasCtx)
+    this._width = this._helperCanvasCtx.measureText(this._text).width;
+  }
 
 }

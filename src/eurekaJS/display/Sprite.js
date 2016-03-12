@@ -14,7 +14,7 @@ this.Sprite = ns.Sprite = class Sprite extends ns.DisplayObjectContainer {
     this.graphics._render(ctx, (colors) ? colors.index : undefined);
     if (colors) {
       colors[colors.index] = this;
-      colors.index++;
+      colors.next();
     }
 
     super._render(ctx, colors);

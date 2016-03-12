@@ -14,6 +14,9 @@ this.Stage = ns.Stage = class Stage extends ns.DisplayObjectContainer {
     this._canvas = canvas;
     this._ctx = this._canvas.context;
 
+    this.width = this._canvas.width;
+    this.height = this._canvas.height;
+
     this._ctx.translate(0.5, 0.5);
 
     this.color = color || '#FFFFFF';
@@ -86,11 +89,24 @@ this.Stage = ns.Stage = class Stage extends ns.DisplayObjectContainer {
 
     this._mouseCanvasCtx.clearRect(0, 0, this._mouseCanvas.width, this._mouseCanvas.height);
     
-    var colors = {index: 1, 0: this};
+    var colors = {index: 16, 0: this, next: function () { this.index += 16; }};
     super._render(this._mouseCanvasCtx, colors);
     
     var cc = this._mouseCanvasCtx.getImageData(event.mouseX, event.mouseY, 1, 1).data;
     var choosenColor = (cc[0] << 16) + (cc[1] << 8) + (cc[2]);
+    // apply color correction for the cases the click went to an aliased place.
+    var error = choosenColor % 16;
+    if (error !== 0) {
+      // Middle case (error == 8) should lead to the down value
+      // in case the choosenColor was the last color of the list + 8
+      // we will still choose it right
+      if (error <= 8) {
+        choosenColor = choosenColor & 0xFFFFF0;
+      }
+      else {
+        choosenColor = choosenColor + (16 - error);
+      }
+    }
 
     event.target = colors[choosenColor];
 

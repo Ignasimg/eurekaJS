@@ -191,7 +191,6 @@
             // When executing user code, the base namespace will be the playground
             playground.namespace = namespace.bind(null, playground);
 
-            console.log(playground.eurekaJS.native);
             // Bind the canvas into the framework.
             let nativeCanvas = new playground.eurekaJS.native.NativeCanvas(canvas);
             // Create the stage instance.

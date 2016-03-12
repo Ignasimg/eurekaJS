@@ -1,11 +1,17 @@
 import "eurekaJS/text/TextField.js";
-import "eurekaJS/display/DisplayObject.js";
+import "eurekaJS/text/TextAlign.js";
+import "eurekaJS/text/TextBaseline.js";
 
 var t = new TextField();
 
 t.text = "Hello world!";
+t.textColor = '#FF0000'
+t.textAlign = TextAlign.CENTER;
+t.textBaseline = TextBaseline.MIDDLE;
+
+Stage.color = '#000000';
 
 Stage.addChild(t);
 
-t.x = 0;
-t.y = 0;
+t.x = Stage.width/2;
+t.y = Stage.height/2;

@@ -1,5 +1,6 @@
 import "eurekaJS/display/DisplayObjectContainer.js";
 import "eurekaJS/native/NativeCanvas.js";
+import "eurekaJS/events/Event.js";
 import "eurekaJS/events/EventPhase.js";
 
 var ns = namespace("eurekaJS.display");
@@ -22,7 +23,16 @@ this.Stage = ns.Stage = class Stage extends ns.DisplayObjectContainer {
     this.color = color || '#FFFFFF';
     this.frameRate = fps || 30;
 
-    var mouseEvents = ['click', 'contextmenu', 'dblclick', 'mousedown', 'mouseenter', 'mouseleave', 'mousemove', 'mouseover', 'mouseout', 'mouseup'];
+    var mouseEvents = [
+      'click', 
+      'contextmenu', 
+      'dblclick', 
+      'mousedown', 
+      'mouseenter', 
+      'mouseleave', 
+      'mousemove', 
+      'mouseup']; 
+    // 'mouseover', 'mouseout',
     mouseEvents.forEach(event => this._canvas.addEventListener(event, this._mouseHandler.bind(this)));
 
     this._mouseCanvas = new eurekaJS.native.NativeCanvas();
@@ -80,7 +90,7 @@ this.Stage = ns.Stage = class Stage extends ns.DisplayObjectContainer {
   }
 
   _mouseHandler (e) {
-    var event = {type: e.type}; //new CustomEvent()
+    var event = new Event (e.type, true, false);
 
     event.mouseX = Math.floor(e.clientX - this._canvas.left);
     event.mouseY = Math.floor(e.clientY - this._canvas.top);
@@ -89,64 +99,93 @@ this.Stage = ns.Stage = class Stage extends ns.DisplayObjectContainer {
 
     this._mouseCanvasCtx.clearRect(0, 0, this._mouseCanvas.width, this._mouseCanvas.height);
     
-    var colors = {index: 16, 0: this, next: function () { this.index += 16; }};
+    // The colouring way is a disaster because of aliasing
+    // since as of now, draw in canvas unaliased is not possible
+    // we'll try to find a better way to do it in future versions.
+
+    var colors = {
+      _index: 256, 
+      0: this, 
+      next: function () { 
+        this._index += 256;
+      },
+      getColor: function (elem) {
+        this[this._index] = elem;
+        return {
+          R: (this._index >> 16) & 0xFF,
+          G: (this._index >> 8) & 0xFF,
+          B: this._index & 0xFF,
+        };
+      },
+      getUniqColor: function (elem) {
+        var c = this.getColor(elem);
+        this.next();
+        return c;
+      },
+      colorToString: function (color) {
+        return 'rgb('+color.R+','+color.G+','+color.B+')'
+      },
+    };
     super._render(this._mouseCanvasCtx, colors);
     
     var cc = this._mouseCanvasCtx.getImageData(event.mouseX, event.mouseY, 1, 1).data;
     var choosenColor = (cc[0] << 16) + (cc[1] << 8) + (cc[2]);
+
     // apply color correction for the cases the click went to an aliased place.
-    var error = choosenColor % 16;
+    var error = choosenColor % 256;
+
     if (error !== 0) {
       // Middle case (error == 8) should lead to the down value
       // in case the choosenColor was the last color of the list + 8
       // we will still choose it right
       if (error <= 8) {
-        choosenColor = choosenColor & 0xFFFFF0;
+        choosenColor = choosenColor & 0xFFFF00;
       }
       else {
-        choosenColor = choosenColor + (16 - error);
+        choosenColor = choosenColor + (256 - error);
       }
     }
 
-    event.target = colors[choosenColor];
+    event._target = colors[choosenColor];
 
-    event.phase = eurekaJS.events.EventPhase.CAPTURING_PHASE;
+
+    event._phase = eurekaJS.events.EventPhase.CAPTURING_PHASE;
 
     (function recursiveCaptureTargetBubble (currentTarget, event) {
       // INV :: currentTarget is THE target (event.target)
       //        or an ancestor of it.
 
-      event.currentTarget = currentTarget;
       // If the current target is THE target
-      if (currentTarget === event.target) {
+      if (currentTarget === event._target) {
         // We switch to target phase
-        event.phase = eurekaJS.events.EventPhase.AT_TARGET;
+        event._nextPhase();
         currentTarget.dispatchEvent(event);
+        event._nextPhase();
         return ;
       }
       // If the current target is not THE target
       else {
         // Send the event in capture phase.
         currentTarget.dispatchEvent(event);
-        // For each child of the target
-        for (var i = 0; i < currentTarget._displayList.length; ++i) {
+        // For each child of the target and while the event has not been stopped
+        for (var i = 0; i < currentTarget._displayList.length && !event._stopped; ++i) {
           var child = currentTarget._displayList[i];
           // If child is the target or contains the target.
           if (child === event.target ||
              (child.contains && child.contains(event.target))) {
             // advance recursively.
             recursiveCaptureTargetBubble(child, event);
-            // when we come back the target phase already took place.
-            event.phase = eurekaJS.events.EventPhase.BUBBLING_PHASE;
-            // reset the right event.currentTarget.
-            event.currentTarget = currentTarget;
-            // dispatch the event in the bubble phase
-            currentTarget.dispatchEvent(event);
+            // it comes back!
+            // 2 things can happen
+            // * Event is in capture phase (because it was stopped before reaching target)
+            // * Event is in bubble phase (either stopped or unstopped)
+            if (!event._stopped && event.bubbles)
+              currentTarget.dispatchEvent(event);
+
             return ;
           }
         }
       }
     })(this, event);
-
   }
 }

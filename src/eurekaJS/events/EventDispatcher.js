@@ -71,15 +71,21 @@ this.EventDispatcher = ns.EventDispatcher = class EventDispatcher {
     if (!this._listeners[event.type])
       return;
 
-    if (this._listeners[event.type][event.phase].length === 0)
+    if (this._listeners[event.type][event.eventPhase].length === 0)
       return;
+
+    event._currentTarget = this;
 
     // Copy the array to avoid problems in cases where 
     // the listener might remove itself.
-    var listeners = this._listeners[event.type][event.phase].slice(0);
+    var listeners = this._listeners[event.type][event.eventPhase].slice(0);
 
+    var stopped = false;
     for (var i = 0; i < listeners.length; ++i) {
-      listeners[i].call(null, event);
+      var ne = event.clone();
+      listeners[i].call(null, ne);
+      stopped = stopped || ne._stopped;
     }
+    event._stopped = stopped;
   }
 }

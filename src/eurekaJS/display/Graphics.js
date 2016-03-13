@@ -18,6 +18,7 @@ function _hexToRGB (hex) {
   } : null;
 }
 
+/*
 function _intToRGB (int) {
   return int ? {
     R: (int >> 16) & 0xFF,
@@ -25,12 +26,12 @@ function _intToRGB (int) {
     B: int & 0xFF,
   } : undefined;
 }
+*/
 
 function _applyCmd (ctx, cmd, color) {
-  color = _intToRGB(color);
+  //color = _intToRGB(color);
 
-  if (color) 
-    color = 'rgb('+color.R+','+color.G+','+color.B+')';
+  //if (color) color = 'rgb('+color.R+','+color.G+','+color.B+')';
 
   switch (cmd[0]) {
     case 'lW' :

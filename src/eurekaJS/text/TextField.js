@@ -24,16 +24,22 @@ this.TextField = ns.TextField = class TextField extends DisplayObject {
 
   _render (ctx, colors) {
     if (colors) {
-      var color = colors.index;
-      colors[colors.index] = this;
-      colors.next();
-    }
+      // TextField is a nightmare for the colours (because of aliasing)
+      // what we will do is draw a rectangle, wherever the text is
+      // TODO :: needs refinement to deal with baselines
+      var color = colors.colorToString(colors.getUniqColor(this));
 
-    ctx.font = this._size+"px Comic Sans MS";
-    ctx.fillStyle = color || this._color;
-    ctx.textAlign = this._align;
-    ctx.textBaseline = this._baseline;
-    ctx.fillText(this._text, 0, 0);
+      ctx.fillStyle = color;
+      ctx.fillRect(0, 0, this._width, this._size);
+      ctx.fill();
+    }
+    else {
+      ctx.font = this._size+"px Comic Sans MS";
+      ctx.fillStyle = this._color;
+      ctx.textAlign = this._align;
+      ctx.textBaseline = this._baseline;
+      ctx.fillText(this._text, 0, 0);
+    }
   }
 
   get size () {

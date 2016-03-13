@@ -1,0 +1,16 @@
+.================.
+|| Requirements ||
+.================.
+
+Feature  Chrome  Edge  Firefox  URL
+class      42.0    13       45  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes
+Promise    32.0   yes       29  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
+
+
+.=============.
+|| Expecting ||
+.=============.
+
+Proxy      49.0    13       18  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy
+import       NS    NS       NS  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import
+export       NS    NS       NS  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export

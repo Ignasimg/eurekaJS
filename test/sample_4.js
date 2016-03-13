@@ -33,7 +33,7 @@ a.y = 300;
 function whoAmI (e) {
   console.info('clicked ::', e.target.name);
   console.info('I\'m    ::', e.currentTarget.name);
-  console.info('phase   ::', e.phase);
+  console.info('phase   ::', e.eventPhase);
   console.warn('---------------------------');
 }
 

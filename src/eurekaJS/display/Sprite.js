@@ -10,12 +10,12 @@ this.Sprite = ns.Sprite = class Sprite extends ns.DisplayObjectContainer {
   }
 
   _render (ctx, colors) {
+    if (colors)
+      var color = colors.colorToString(colors.getUniqColor(this));
+
+
     // First have to render the own content then the children.
-    this.graphics._render(ctx, (colors) ? colors.index : undefined);
-    if (colors) {
-      colors[colors.index] = this;
-      colors.next();
-    }
+    this.graphics._render(ctx, color);
 
     super._render(ctx, colors);
   }

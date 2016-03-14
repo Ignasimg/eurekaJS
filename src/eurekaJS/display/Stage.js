@@ -32,6 +32,8 @@ this.Stage = ns.Stage = class Stage extends ns.DisplayObjectContainer {
       'mouseleave', 
       'mousemove', 
       'mouseup']; 
+
+    mouseEvents = ['click'];
     // 'mouseover', 'mouseout',
     mouseEvents.forEach(event => this._canvas.addEventListener(event, this._mouseHandler.bind(this)));
 
@@ -95,59 +97,56 @@ this.Stage = ns.Stage = class Stage extends ns.DisplayObjectContainer {
     event.mouseX = Math.floor(e.clientX - this._canvas.left);
     event.mouseY = Math.floor(e.clientY - this._canvas.top);
 
-    //this.dispatchEvent(event);
-
     this._mouseCanvasCtx.clearRect(0, 0, this._mouseCanvas.width, this._mouseCanvas.height);
     
-    // The colouring way is a disaster because of aliasing
-    // since as of now, draw in canvas unaliased is not possible
-    // we'll try to find a better way to do it in future versions.
+    // We'll paint every item with a different colour and keep a 
+    // reference to which item has which colour, so later on we 
+    // can discover which item was clicked by the colour.
 
+    // :: NOTE :: This solution is experimental, since it has problem with anti-aliasing.
     var colors = {
-      _index: 256, 
-      0: this, 
-      next: function () { 
-        this._index += 256;
-      },
-      getColor: function (elem) {
-        this[this._index] = elem;
-        return {
-          R: (this._index >> 16) & 0xFF,
-          G: (this._index >> 8) & 0xFF,
-          B: this._index & 0xFF,
-        };
+      '000000': this,
+      getColor: function () {
+        var color = Math.ceil(Math.random() * 0xFFFFFF);
+        color = color.toString(16).toUpperCase();
+        for (i = color.length; i < 6; ++i) color = '0'+color;
+        return color;
       },
       getUniqColor: function (elem) {
-        var c = this.getColor(elem);
-        this.next();
-        return c;
+        do {
+          var color = this.getColor();
+        } while (this[color]);
+        this[color] = elem;
+        return color;
       },
       colorToString: function (color) {
-        return 'rgb('+color.R+','+color.G+','+color.B+')'
-      },
-    };
-    super._render(this._mouseCanvasCtx, colors);
-    
-    var cc = this._mouseCanvasCtx.getImageData(event.mouseX, event.mouseY, 1, 1).data;
-    var choosenColor = (cc[0] << 16) + (cc[1] << 8) + (cc[2]);
-
-    // apply color correction for the cases the click went to an aliased place.
-    var error = choosenColor % 256;
-
-    if (error !== 0) {
-      // Middle case (error == 8) should lead to the down value
-      // in case the choosenColor was the last color of the list + 8
-      // we will still choose it right
-      if (error <= 8) {
-        choosenColor = choosenColor & 0xFFFF00;
-      }
-      else {
-        choosenColor = choosenColor + (256 - error);
+        return '#'+color;
       }
     }
 
+    super._render(this._mouseCanvasCtx, colors);
+    
+    var cc = this._mouseCanvasCtx.getImageData(event.mouseX, event.mouseY, 1, 1).data;
+
+    // when the click goes into an aliased place we'll get the alpha value under 255
+    if (cc[3] > 0 && cc[3] < 255) {
+      // we'll try to find a pixel nearby which is not aliased.
+      var d = this._mouseCanvasCtx.getImageData(event.mouseX-1, event.mouseY-1, 3, 3).data;
+      for (var i = 0; i < 9; ++i) {
+        if (d[i*4 + 3] == 0 || d[i*4 + 3] == 255) {
+          cc = d.slice(i*4, i*4 + 3);
+          break ;
+        }
+      }
+    }
+
+    var choosenColor = ((cc[0] << 16) + (cc[1] << 8) + (cc[2]))
+    choosenColor = choosenColor.toString(16).toUpperCase();
+    for (i = choosenColor.length; i < 6; ++i) choosenColor = '0'+choosenColor;
+
     event._target = colors[choosenColor];
 
+    if (!event._target) return ;
 
     event._phase = eurekaJS.events.EventPhase.CAPTURING_PHASE;
 

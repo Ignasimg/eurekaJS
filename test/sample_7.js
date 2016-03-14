@@ -52,7 +52,7 @@ Stage.addChild(title);
 title.x = Stage.width/2;
 title.y = 0;
 
-var messages = ['wololo!', 'eurekaJS rulz', 'jsaksjaksajskajsk 1337', '(\\__/)', '(=\';\'=)', '(")_(")', 'ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦㄧㄨㄩ'];
+var messages = ['wololo!', 'eurekaJS rulz', 'jsaksjaksajskajsk 1337', '(\\__/)', '(=\';\'=)', '(")_(")', 'ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦㄧㄨㄩ', '?'];
 for (var i = 0; i < messages.length; ++i) {
   let msg = new CoolMessage();
   msg.text = messages[i];

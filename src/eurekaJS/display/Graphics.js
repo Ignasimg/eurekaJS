@@ -18,21 +18,7 @@ function _hexToRGB (hex) {
   } : null;
 }
 
-/*
-function _intToRGB (int) {
-  return int ? {
-    R: (int >> 16) & 0xFF,
-    G: (int >> 8) & 0xFF,
-    B: int & 0xFF,
-  } : undefined;
-}
-*/
-
 function _applyCmd (ctx, cmd, color) {
-  //color = _intToRGB(color);
-
-  //if (color) color = 'rgb('+color.R+','+color.G+','+color.B+')';
-
   switch (cmd[0]) {
     case 'lW' :
       ctx.lineWidth = cmd[1];
@@ -47,10 +33,16 @@ function _applyCmd (ctx, cmd, color) {
       ctx.beginPath();
       break;
     case 'mT' : 
-      ctx.moveTo(cmd[1], cmd[2]);
+      if (color) 
+        ctx.moveTo(Math.round(cmd[1]), Math.round(cmd[2]));
+      else 
+        ctx.moveTo(cmd[1], cmd[2]);
       break;
     case 'lT' : 
-      ctx.lineTo(cmd[1], cmd[2]);
+      if (color) 
+        ctx.lineTo(Math.round(cmd[1]), Math.round(cmd[2]));
+      else 
+        ctx.lineTo(cmd[1], cmd[2]);
       break;
     case 'a' :
       ctx.arc(cmd[1], cmd[2], cmd[3], cmd[4], cmd[5], cmd[6] || false);
@@ -109,6 +101,8 @@ this.Graphics = ns.Graphics = class Graphics {
   moveTo (x, y) {
     this._helperBeginPath();
     this._cmd.push(['mT', x, y]);
+    this._aX = x;
+    this._aY = y;
   }
   
   lineTo (x, y) {
@@ -118,6 +112,8 @@ this.Graphics = ns.Graphics = class Graphics {
     }
 
     this._cmd.push(['lT', x, y]);
+    this._aX = x;
+    this._aY = y;
   }
 
   lineStyle (thickness, color, alpha) {

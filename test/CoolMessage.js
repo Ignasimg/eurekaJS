@@ -15,7 +15,7 @@ this.CoolMessage = class CoolMessage extends Sprite {
 
   set text (v) {
     this.msg.text = v;
-    this.long = this.msg.textWidth;
+    this.long = Math.round(this.msg.textWidth);
   }
 
   set long (v) {

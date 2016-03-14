@@ -1,8 +1,6 @@
 var ns = namespace("eurekaJS.text");
 
 this.TextBaseline = ns.TextBaseline = class TextBaseline {
-  constructor () {}
-
   static get TOP () {
     return 'top';
   }

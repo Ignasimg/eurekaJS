@@ -12,6 +12,4 @@ this.EventPhase = ns.EventPhase = class EventPhase {
   static get BUBBLING_PHASE () {
     return 4;
   }
-
-  constructor () {}
 }

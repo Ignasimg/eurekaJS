@@ -1,6 +1,7 @@
 import "eurekaJS/display/DisplayObjectContainer.js";
 import "eurekaJS/native/NativeCanvas.js";
 import "eurekaJS/events/Event.js";
+import "eurekaJS/events/MouseEvent.js";
 import "eurekaJS/events/EventPhase.js";
 
 var ns = namespace("eurekaJS.display");
@@ -31,9 +32,7 @@ this.Stage = ns.Stage = class Stage extends ns.DisplayObjectContainer {
       'mouseenter', 
       'mouseleave', 
       'mousemove', 
-      'mouseup']; 
-
-    mouseEvents = ['click'];
+      'mouseup'];
     // 'mouseover', 'mouseout',
     mouseEvents.forEach(event => this._canvas.addEventListener(event, this._mouseHandler.bind(this)));
 
@@ -92,7 +91,7 @@ this.Stage = ns.Stage = class Stage extends ns.DisplayObjectContainer {
   }
 
   _mouseHandler (e) {
-    var event = new Event (e.type, true, false);
+    var event = new MouseEvent (e);
 
     event.mouseX = Math.floor(e.clientX - this._canvas.left);
     event.mouseY = Math.floor(e.clientY - this._canvas.top);
@@ -147,8 +146,6 @@ this.Stage = ns.Stage = class Stage extends ns.DisplayObjectContainer {
     event._target = colors[choosenColor];
 
     if (!event._target) return ;
-
-    event._phase = eurekaJS.events.EventPhase.CAPTURING_PHASE;
 
     (function recursiveCaptureTargetBubble (currentTarget, event) {
       // INV :: currentTarget is THE target (event.target)

@@ -1,8 +1,6 @@
 var ns = namespace("eurekaJS.text");
 
 this.TextAlign = ns.TextAlign = class TextAlign {
-  constructor () {}
-
   static get LEFT () {
     return 'left';
   }

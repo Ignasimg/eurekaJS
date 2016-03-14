@@ -38,4 +38,8 @@ ns.NativeCanvas = class NativeCanvas {
   get context () {
     return this.element.getContext("2d");
   }
+
+  get style () {
+    return this.element.style;
+  }
 }

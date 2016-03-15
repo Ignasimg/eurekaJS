@@ -23,3 +23,4 @@ Stage.addEventListener(MouseEvent.MOUSEMOVE, function (ev) {
   cursor.x = ev.mouseX;
   cursor.y = ev.mouseY;
 });
+

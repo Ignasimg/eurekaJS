@@ -17,6 +17,10 @@ this.DisplayObjectContainer = ns.DisplayObjectContainer = class DisplayObjectCon
   }
 
   addChildAt (displayObject, index) {
+    if (displayObject instanceof ns.DisplayObjectContainer
+      && displayObject.contains(this)) {
+      throw new Error("Invalid argument");
+    }
     if (!(displayObject instanceof ns.DisplayObject))
       throw new TypeError("Expecting displayObject");
     if (index < 0 || index > this.numChild) 

@@ -10,6 +10,7 @@ this.TextField = ns.TextField = class TextField extends DisplayObject {
     super();
     
     this._text = "";
+    this._font = 'Comic Sans MS'
     this._color = '#000000';
     this._baseline = eurekaJS.text.TextBaseline.TOP;
     this._align = eurekaJS.text.TextAlign.LEFT;
@@ -22,6 +23,38 @@ this.TextField = ns.TextField = class TextField extends DisplayObject {
     this._helperCanvasCtx = this._helperCanvas.context;
   }
 
+  _boundingBox () {
+    var box = {x: 0, y: 0, width: this._width, height: this._size};
+    switch (this._align) {
+      case eurekaJS.text.TextAlign.CENTER : 
+        box.x = -this._width/2;
+        break;
+      case eurekaJS.text.TextAlign.RIGHT : 
+        box.x = -this._width;
+        break;
+      case eurekaJS.text.TextAlign.LEFT :
+      default:
+        box.x = 0;
+        break;
+    }
+    switch (this._baseline) {
+      case eurekaJS.text.TextBaseline.ALPHABETIC :
+      case eurekaJS.text.TextBaseline.IDEOGRAPHIC :
+      case eurekaJS.text.TextBaseline.BOTTOM :
+        box.y = -this._size;
+        break;
+      case eurekaJS.text.TextBaseline.MIDDLE :
+        box.y = -this._size/2;
+        break;
+      case eurekaJS.text.TextBaseline.HANGING :
+      case eurekaJS.text.TextBaseline.TOP :
+      default:
+        box.y = 0;
+        break;
+    }
+    return box;
+  }
+
   _render (ctx, colors) {
     if (colors) {
       // TextField is a nightmare for the colours (because of aliasing)
@@ -31,40 +64,13 @@ this.TextField = ns.TextField = class TextField extends DisplayObject {
 
       ctx.fillStyle = color;
 
-      var rec = {x: 0, y: 0, xx: this._width, yy: this._size};
-      switch (this._align) {
-        case eurekaJS.text.TextAlign.CENTER : 
-          rec.x = -this._width/2;
-          break;
-        case eurekaJS.text.TextAlign.RIGHT : 
-          rec.x = -this._width;
-          break;
-        case eurekaJS.text.TextAlign.LEFT :
-        default:
-          rec.x = 0;
-          break;
-      }
-      switch (this._baseline) {
-        case eurekaJS.text.TextBaseline.ALPHABETIC :
-        case eurekaJS.text.TextBaseline.IDEOGRAPHIC :
-        case eurekaJS.text.TextBaseline.BOTTOM :
-          rec.y = -this._size;
-          break;
-        case eurekaJS.text.TextBaseline.MIDDLE :
-          rec.y = -this._size/2;
-          break;
-        case eurekaJS.text.TextBaseline.HANGING :
-        case eurekaJS.text.TextBaseline.TOP :
-        default:
-          rec.y = 0;
-          break;
-      }
+      var rec = this._boundingBox();
 
-      ctx.fillRect(Math.round(rec.x), Math.round(rec.y), Math.round(rec.xx), Math.round(rec.yy));
+      ctx.fillRect(Math.round(rec.x), Math.round(rec.y), Math.round(rec.width), Math.round(rec.height));
       ctx.fill();
     }
     else {
-      ctx.font = this._size+"px Comic Sans MS";
+      ctx.font = this._size+"px "+this._font;
       ctx.fillStyle = color || this._color;
       ctx.textAlign = this._align;
       ctx.textBaseline = this._baseline;
@@ -78,6 +84,15 @@ this.TextField = ns.TextField = class TextField extends DisplayObject {
 
   set size (size) {
     this._size = size;
+    this._measureWidth();
+  }
+
+  get font () {
+    return this._font;
+  }
+
+  set font (font) {
+    this._font = font;
     this._measureWidth();
   }
 

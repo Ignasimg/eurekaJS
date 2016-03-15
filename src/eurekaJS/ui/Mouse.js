@@ -8,4 +8,4 @@ this.Mouse = ns.Mouse = class Mouse {
   static show () {
     eurekaJS.playground.Stage.canvas.style.cursor = 'initial';
   }
-} 
+}

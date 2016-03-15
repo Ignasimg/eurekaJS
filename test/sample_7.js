@@ -12,11 +12,13 @@ class CoolText extends Sprite {
     
     this.t1.text = text;
     this.t1.textColor = '#FF0000';
+    this.t1.size = 60;
 
     this.t2 = new TextField();
 
     this.t2.text = text;
     this.t2.textColor = '#660000';
+    this.t2.size = 60;
 
     this.t2.x = 2;
     this.t2.y = 2;

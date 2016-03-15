@@ -101,8 +101,6 @@ this.Graphics = ns.Graphics = class Graphics {
   moveTo (x, y) {
     this._helperBeginPath();
     this._cmd.push(['mT', x, y]);
-    this._aX = x;
-    this._aY = y;
   }
   
   lineTo (x, y) {
@@ -112,8 +110,6 @@ this.Graphics = ns.Graphics = class Graphics {
     }
 
     this._cmd.push(['lT', x, y]);
-    this._aX = x;
-    this._aY = y;
   }
 
   lineStyle (thickness, color, alpha) {

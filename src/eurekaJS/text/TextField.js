@@ -14,8 +14,10 @@ this.TextField = ns.TextField = class TextField extends DisplayObject {
     this._color = '#000000';
     this._baseline = eurekaJS.text.TextBaseline.TOP;
     this._align = eurekaJS.text.TextAlign.LEFT;
+    this._bold = false;
+    this._italic = false;
 
-    this._size = 60;
+    this._size = 16;
 
     this._width = 0;
 
@@ -70,13 +72,35 @@ this.TextField = ns.TextField = class TextField extends DisplayObject {
       ctx.fill();
     }
     else {
-      ctx.font = this._size+"px "+this._font;
+      ctx.font = ((this._bold) ? 'bold ' : '') +
+                 ((this._italic) ? 'italic ' : '') +
+                 this._size+'px ' +
+                 this._font;
       ctx.fillStyle = color || this._color;
       ctx.textAlign = this._align;
       ctx.textBaseline = this._baseline;
       ctx.fillText(this._text, 0, 0);
     }
   }
+
+  get bold () {
+    return this._bold;
+  }
+
+  set bold (bold) {
+    this._bold = bold;
+    this._measureWidth();
+  }
+
+  get italic () {
+    return this._italic;
+  }
+
+  set italic (italic) {
+    this._italic = italic;
+    this._measureWidth();
+  }
+
 
   get size () {
     return this._size;
@@ -145,5 +169,4 @@ this.TextField = ns.TextField = class TextField extends DisplayObject {
     this._render(this._helperCanvasCtx)
     this._width = this._helperCanvasCtx.measureText(this._text).width;
   }
-
 }

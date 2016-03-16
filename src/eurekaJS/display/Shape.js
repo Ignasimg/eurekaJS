@@ -1,9 +1,8 @@
-import "eurekaJS/display/DisplayObjectContainer.js";
 import "eurekaJS/display/Graphics.js";
 
 var ns = namespace("eurekaJS.display");
 
-this.Sprite = ns.Sprite = class Sprite extends ns.DisplayObjectContainer {
+this.Shape = ns.Shape = class Shape extends DisplayObject {
   constructor () {
     super();
     this._graphics = new ns.Graphics();
@@ -19,7 +18,5 @@ this.Sprite = ns.Sprite = class Sprite extends ns.DisplayObjectContainer {
 
     // First have to render the own content then the children.
     this.graphics._render(ctx, color);
-
-    super._render(ctx, colors);
   }
 }

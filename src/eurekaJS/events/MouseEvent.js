@@ -17,7 +17,7 @@ this.MouseEvent = ns.MouseEvent = class MouseEvent extends Event {
   }
 
   get ctrlKey () {
-    return this._ctrlKey;
+    return this._ctrlKey;0
   }
 
   get shiftKey () {

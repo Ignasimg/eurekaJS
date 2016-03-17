@@ -76,4 +76,24 @@ this.Event = ns.Event = class Event {
   stopPropagation () {
     this._stopped = true;
   }
+
+  static get RENDER () {
+    return 'beforeRender';
+  }
+
+  static get ADDED () {
+    return 'added';
+  }
+
+  static get ADDED_TO_STAGE () {
+    return 'addedToStage';
+  }
+
+  static get REMOVED () {
+    return 'removed';
+  }
+
+  static get REMOVED_FROM_STAGE () {
+    return 'removedFromStage';
+  }
 }

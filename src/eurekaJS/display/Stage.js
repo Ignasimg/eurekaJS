@@ -50,7 +50,9 @@ this.Stage = ns.Stage = class Stage extends ns.DisplayObjectContainer {
   }
 
   _render () {
-    this.dispatchEvent({type: 'beforeRender', phase: eurekaJS.events.EventPhase.AT_TARGET});
+    var e = new Event('beforeRender', false, false);
+    e._nextPhase();
+    this.dispatchEvent(e);
     this._clear();
     super._render(this._ctx);
   }

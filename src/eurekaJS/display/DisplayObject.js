@@ -51,14 +51,25 @@ this.DisplayObject = ns.DisplayObject = class DisplayObject extends eurekaJS.eve
     // Setup the parent container
     this._parent = container;
 
-    if (container) this.dispatchEvent({type: 'added', phase: eurekaJS.events.EventPhase.AT_TARGET});
-    else           this.dispatchEvent({type: 'removed', phase: eurekaJS.events.EventPhase.AT_TARGET});
+    var e;
+
+    if (container) e = new Event(Event.ADDED, false, false);
+    else           e = new Event(Event.REMOVED, false, false);
+
+    e._nextPhase();
+    this.dispatchEvent(e);
   }
 
   _addedToStage (stage) {
     this._stage = stage;
-    if (stage) this.dispatchEvent({type: 'addedToStage', phase: eurekaJS.events.EventPhase.AT_TARGET});
-    else       this.dispatchEvent({type: 'removedFromStage', phase: eurekaJS.events.EventPhase.AT_TARGET});
+
+    var e;
+
+    if (stage) e = new Event(Event.ADDED_TO_STAGE, false, false);
+    else       e = new Event(Event.REMOVED_FROM_STAGE, false, false);
+
+    e._nextPhase();
+    this.dispatchEvent(e);
   }
 
   _position (ctx) {

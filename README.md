@@ -1,4 +1,4 @@
-# eurekaJS
+# EurekaJS
 
 EurekaJS is a framework under development.
 

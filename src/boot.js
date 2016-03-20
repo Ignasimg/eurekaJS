@@ -147,7 +147,7 @@
   }
 
   // Base url for the framework files.
-  var eurekaBaseURL = document.currentScript.getAttribute('data-base-url') || '';
+  var eurekaBaseURL = document.currentScript.getAttribute('src').slice(0, -7) || '';
 
   // Boot init
   var init = function () {

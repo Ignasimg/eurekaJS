@@ -113,26 +113,6 @@
     var code = '"use strict";\n'+vars+'\neval("'+sourceCode+'");';
 
     Function(code).call(context);
-    /*
-    try {
-      // Create a Function which will run our code
-      Function (code)
-      // Call it into the given context
-      .call(context);
-    }
-    catch (e) {
-      parseError(e, debugInfo);
-      throw e;
-    }
-    */
-  }
-
-  // Parse an error from the evalInContext to throw a decent feedback.
-  var parseError = function (error, debugInfo) {
-    var position = /<anonymous>:(\d+):(\d+)/.exec(error.stack.split("\n")[1]);
-    var row = (parseInt(position[1]) + debugInfo.lineStart - 1);
-    var col = position[2];
-    console.error(error.message+"\tat %c"+debugInfo.fileName+":"+row+":"+col,"color:blue;");
   }
 
   // Require some files.
@@ -209,5 +189,9 @@
     }
   }
 
-  init();
+  window.addEventListener('load', function boot () {
+    init();
+    window.removeEventListener('load', boot);
+  });
+
 })();

@@ -147,7 +147,12 @@
   }
 
   // Base url for the framework files.
-  var eurekaBaseURL = document.currentScript.getAttribute('src').slice(0, -7) || '';
+  var eurekaBaseURL = 
+    document.currentScript.getAttribute('src') // Get current script URL
+    .split('/')   // Split it into its parts
+    .slice(0, -1) // Remove current file part
+    .join('/')    // Join the parts together again
+    .concat('/'); // Add the trailing slash
 
   // Boot init
   var init = function () {
@@ -157,8 +162,8 @@
       'eurekaJS/display/Stage.js',];
 
     // Base url of the framework files
-    if (eurekaBaseURL.length == 0) eurekaBaseURL = '.';
-    if (!eurekaBaseURL.endsWith('/')) eurekaBaseURL = eurekaBaseURL + '/';
+    //if (eurekaBaseURL.length == 0) eurekaBaseURL = '.';
+    //if (!eurekaBaseURL.endsWith('/')) eurekaBaseURL = eurekaBaseURL + '/';
 
     // Get all canvas elements on the page
     var canvasList = document.getElementsByTagName("canvas");

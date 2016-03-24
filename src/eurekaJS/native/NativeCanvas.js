@@ -42,4 +42,12 @@ ns.NativeCanvas = class NativeCanvas {
   get style () {
     return this.element.style;
   }
+
+  setAttribute (name, value) {
+    return this.element.setAttribute(name, value);
+  }
+
+  focus () {
+    return this.element.focus();
+  }
 }

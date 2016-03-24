@@ -2,6 +2,7 @@ import "eurekaJS/display/DisplayObjectContainer.js";
 import "eurekaJS/native/NativeCanvas.js";
 import "eurekaJS/events/Event.js";
 import "eurekaJS/events/MouseEvent.js";
+import "eurekaJS/events/KeyboardEvent.js";
 import "eurekaJS/events/EventPhase.js";
 
 var ns = namespace("eurekaJS.display");
@@ -35,6 +36,13 @@ this.Stage = ns.Stage = class Stage extends ns.DisplayObjectContainer {
       'mouseup'];
     // 'mouseover', 'mouseout',
     mouseEvents.forEach(event => this._canvas.addEventListener(event, this._mouseHandler.bind(this)));
+
+    var keyboardEvents = ['keydown', 'keypress', 'keyup'];
+    keyboardEvents.forEach(event => this._canvas.addEventListener(event, this._keyboardHandler.bind(this)));
+
+    this._canvas.setAttribute('tabindex','0');
+    this._canvas.style.outline = 'none';
+    this._canvas.focus();
 
     this._mouseCanvas = new eurekaJS.native.NativeCanvas();
     this._mouseCanvas.width = this._canvas.width;
@@ -185,5 +193,11 @@ this.Stage = ns.Stage = class Stage extends ns.DisplayObjectContainer {
         }
       }
     })(this, event);
+  }
+
+  _keyboardHandler(e) {
+    var event = new KeyboardEvent (e);
+    event._nextPhase();
+    this.dispatchEvent(event);
   }
 }

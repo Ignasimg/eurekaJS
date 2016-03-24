@@ -2,6 +2,7 @@ import "eurekaJS/display/Shape.js";
 import "eurekaJS/display/Sprite.js";
 import "eurekaJS/events/Event.js";
 import "eurekaJS/events/KeyboardEvent.js";
+import "eurekaJS/ui/Keyboard.js";
 
 /*
 * Inspired on :: https://www.kirupa.com/developer/actionscript/rotation_center.htm
@@ -99,9 +100,23 @@ var mouseX = 0;
 var mouseY = 0;
 
 var rotateCube = function(e) {
+  console.log(e); //, e.keyCode);
+  switch (e.keyCode) {
+    case Keyboard.UP : 
+      mouseY--;
+    break;
+    case Keyboard.DOWN : 
+      mouseY++;
+    break;
+    case Keyboard.LEFT : 
+      mouseX--;
+    break;
+    case Keyboard.RIGHT : 
+      mouseX++;
+    break;
+  }
   //mouseX = e.mouseX - scene.x;
   //mouseY = e.mouseY - scene.y;
-  console.log(e);
 };
 
 var maxDepth = Math.sqrt(50*50 * 3);

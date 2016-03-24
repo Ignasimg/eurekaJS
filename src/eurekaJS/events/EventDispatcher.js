@@ -82,7 +82,9 @@ this.EventDispatcher = ns.EventDispatcher = class EventDispatcher {
 
     var stopped = false;
     for (var i = 0; i < listeners.length; ++i) {
-      var ne = event.clone();
+      //var ne = event.clone();
+      // Instead of cloning the object we just create a new one with the prototype of the original.
+      var ne = Object.create(event);
       listeners[i].call(null, ne);
       stopped = stopped || ne._stopped;
     }

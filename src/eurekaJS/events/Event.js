@@ -49,20 +49,15 @@ this.Event = ns.Event = class Event {
       this._phase = eurekaJS.events.EventPhase.BUBBLING_PHASE;
   }
 
+  /*
   clone () {
     var newEvent = new Event(this.type, this.bubbles, this.cancelable);
     for (var prop in this) {
       newEvent[prop] = this[prop];
     }
-    /*
-    newEvent._cancelled = this._cancelled;
-    newEvent._currentTarget = this._currentTarget;
-    newEvent._target = this._target;
-    newEvent._phase = this._phase;
-    newEvent._stopped = this._stopped;
-    */
     return newEvent;
   }
+  */
 
   isDefaultPrevented () {
     return this._cancelled;

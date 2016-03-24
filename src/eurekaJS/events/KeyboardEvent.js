@@ -16,9 +16,6 @@ this.KeyboardEvent = ns.KeyboardEvent = class KeyboardEvent extends Event {
       console.error('keyCode or charCode not available on KeyboardEvent');
     }
 
-    //console.log(nativeKeyboardEvent.keyCode);
-    //console.log(nativeKeyboardEvent.charCode);
-
     this._keyCode = nativeKeyboardEvent.which || nativeKeyboardEvent.keyCode;
     this._charCode = nativeKeyboardEvent.charCode;
   }
@@ -43,12 +40,13 @@ this.KeyboardEvent = ns.KeyboardEvent = class KeyboardEvent extends Event {
     return this._shiftKey;
   }
 
-  //get keyCode () {}
+  get keyCode () {
+    return this._keyCode;
+  }
 
   get keyLocation () {
     return this._keyLocation;
   }
-
 
   static get KEY_UP () {
     return 'keyup';

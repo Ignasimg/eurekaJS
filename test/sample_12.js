@@ -100,23 +100,20 @@ var mouseX = 0;
 var mouseY = 0;
 
 var rotateCube = function(e) {
-  console.log(e); //, e.keyCode);
   switch (e.keyCode) {
     case Keyboard.UP : 
-      mouseY--;
+      mouseY -= 10;
     break;
     case Keyboard.DOWN : 
-      mouseY++;
+      mouseY += 10;
     break;
     case Keyboard.LEFT : 
-      mouseX--;
+      mouseX -= 10;
     break;
     case Keyboard.RIGHT : 
-      mouseX++;
+      mouseX += 10;
     break;
   }
-  //mouseX = e.mouseX - scene.x;
-  //mouseY = e.mouseY - scene.y;
 };
 
 var maxDepth = Math.sqrt(50*50 * 3);
@@ -138,3 +135,7 @@ Stage.addEventListener(KeyboardEvent.KEY_DOWN, rotateCube);
 Stage.addEventListener(Event.RENDER, project);
 
 Stage.addChild(scene);
+
+Stage.frameRate = 120;
+
+Stage.color = '#000000';

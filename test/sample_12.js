@@ -126,7 +126,8 @@ var project = function () {
     let currBalloon = scene.getChildByName("redballoon"+i);
     currBalloon.x = screenPoints[i].x;
     currBalloon.y = screenPoints[i].y;
-    currBalloon.scaleX = currBalloon.scaleY = 1 * screenPoints[i].scaleFactor;
+    currBalloon.scaleX = 1 * screenPoints[i].scaleFactor;
+    currBalloon.scaleY = 1 * screenPoints[i].scaleFactor;
     currBalloon.alpha = (screenPoints[i].depth + maxDepth)/(2*maxDepth);
   }
 }

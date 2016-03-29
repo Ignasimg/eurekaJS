@@ -1,4 +1,5 @@
 import "eurekaJS/events/EventDispatcher.js"
+import "eurekaJS/geom/Transform.js"
 
 var ns = namespace("eurekaJS.display");
 
@@ -11,6 +12,8 @@ this.DisplayObject = ns.DisplayObject = class DisplayObject extends eurekaJS.eve
 
     this.name = "";
 
+    this.transform = Transform._newTransform(this);
+
     this.x = x || 0;
     this.y = y || 0;
 
@@ -18,15 +21,69 @@ this.DisplayObject = ns.DisplayObject = class DisplayObject extends eurekaJS.eve
     this.height = height || 0;
     this.visible = visible || true;
 
-    this.scaleX = 1;
-    this.scaleY = 1;
+    this._scaleX = 1;
+    this._scaleY = 1;
 
     this.alpha = 1;
 
-    this.rotation = 0;
+    this._rotation = 0;
 
     this._stage = null;
     this._parent = null;
+  }
+
+  _updateTransform () {
+    this.transform.matrix.identity();
+    this.transform.matrix.translate(this._x, this._y);
+    this.transform.matrix.rotate(this._rotation);
+    this.transform.matrix.scale(this._scaleX, this._scaleY);
+  }
+
+  set x (value) {
+    this._x = value;
+    this._updateTransform();
+  }
+
+  get x () {
+    return this._x;
+  }
+
+  set y (value) {
+    this._y = value;
+    this._updateTransform();
+  }
+
+  get y () {
+    return this._y;
+  }
+
+  set scaleX (value) {
+    this._scaleX = value;
+    this._updateTransform();
+  }
+
+  get scaleX () {
+    return this._scaleX;
+  }
+
+  set scaleY (value) {
+    this._scaleY = value;
+    this._updateTransform();
+  }
+
+  get scaleY () {
+    return this._scaleY;
+  }
+
+  set rotation (value) {
+    // From degree to rad
+    this._rotation = value*(Math.PI/180);
+    this._updateTransform();
+  }
+
+  get rotation () {
+    // From rad to deg
+    return this._rotation*(180/Math.PI);
   }
 
   get stage () {
@@ -73,10 +130,17 @@ this.DisplayObject = ns.DisplayObject = class DisplayObject extends eurekaJS.eve
   }
 
   _position (ctx) {
+    /*
     ctx.translate(this.x, this.y);
     ctx.rotate(this.rotation*(Math.PI/180));
     ctx.scale(this.scaleX, this.scaleY);
-
+    */
+    ctx.transform(this.transform.matrix.a,
+                  this.transform.matrix.b,
+                  this.transform.matrix.c,
+                  this.transform.matrix.d,
+                  this.transform.matrix.tx,
+                  this.transform.matrix.ty);
     ctx.globalAlpha = this.alpha;
   }
 }

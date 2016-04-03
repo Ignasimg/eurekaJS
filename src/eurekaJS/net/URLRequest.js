@@ -1,4 +1,4 @@
-import "eurekaJS/events/URLRequestMethod.js";
+import "eurekaJS/net/URLRequestMethod.js";
 
 var ns = namespace("eurekaJS.net");
 

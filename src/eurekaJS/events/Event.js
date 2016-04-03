@@ -91,4 +91,12 @@ this.Event = ns.Event = class Event {
   static get REMOVED_FROM_STAGE () {
     return 'removedFromStage';
   }
+
+  static get OPEN () {
+    return 'open';
+  }
+
+  static get COMPLETE () {
+    return 'complete';
+  }
 }

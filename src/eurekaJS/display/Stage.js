@@ -54,7 +54,8 @@ this.Stage = ns.Stage = class Stage extends ns.DisplayObjectContainer {
   }
 
   _clear () {
-    this._ctx.fillRect(0, 0, this._canvas.width, this._canvas.height);
+//    this._ctx.fillRect(0, 0, this._canvas.width, this._canvas.height);
+    this._ctx.fillRect(-0.5, -0.5, this._canvas.width+0.5, this._canvas.height+0.5);
   }
 
   _render () {

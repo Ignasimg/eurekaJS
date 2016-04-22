@@ -4,6 +4,7 @@ import "eurekaJS/events/ProgressEvent.js";
 import "eurekaJS/events/IOErrorEvent.js";
 import "eurekaJS/net/URLRequest.js";
 import "eurekaJS/net/URLRequestMethod.js";
+import "eurekaJS/net/URLLoaderDataFormat.js";
 
 var ns = namespace("eurekaJS.net");
 
@@ -16,6 +17,7 @@ this.URLLoader = ns.URLLoader = class URLLoader extends eurekaJS.events.EventDis
     this.bytesLoaded = 0;
     this.bytesTotal = 0;
     this.data = null;
+    this.dataFormat = URLLoaderDataFormat.TEXT;
 
     var events = [
       'loadstart',
@@ -25,8 +27,6 @@ this.URLLoader = ns.URLLoader = class URLLoader extends eurekaJS.events.EventDis
       'timeout',
       'load'];
     events.forEach(event => this._xhttp.addEventListener(event, this._eventHandler.bind(this)));
-
-    this._xhttp.addEventListener
 
     if (request)
       this.load(request);
@@ -58,10 +58,16 @@ this.URLLoader = ns.URLLoader = class URLLoader extends eurekaJS.events.EventDis
     this.dispatchEvent(event);
   }
 
+  close () {
+    this._xhttp.abort();
+  }
+
   load (request) {
     if (!(request instanceof eurekaJS.net.URLRequest) || (request.url === null)) {
       throw new TypeError('The value of the request parameter or the URLRequest.url property of the URLRequest object passed are null.')
     }
+
+    this._xhttp.responseType = this.dataFormat;
 
     this._xhttp.open(request.method, request.url, true);
     this._xhttp.send(request.data);

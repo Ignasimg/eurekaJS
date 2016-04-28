@@ -53,7 +53,7 @@ this.URLLoader = ns.URLLoader = class URLLoader extends eurekaJS.events.EventDis
         this.data = this._xhttp.response;
         break;
     }
-    event._target = this._xhttp;
+    event._target = this; //._xhttp;
     event._nextPhase();
     this.dispatchEvent(event);
   }

@@ -4,7 +4,7 @@ var ns = namespace("eurekaJS.display");
 
 this.BitmapData = ns.BitmapData = class BitmapData {
   constructor (width, height) {
-    this._canvas = new eurekaJS.native.Canvas(width, height);
+    this._canvas = new eurekaJS.native.Canvas(null, width, height);
     this._ctx = this._canvas.context;
     this._imageData = this._ctx.createImageData(width, height);
   }
@@ -24,7 +24,7 @@ this.BitmapData = ns.BitmapData = class BitmapData {
 
 
 
-    var canvas = new eurekaJS.native.Canvas(width, height);
+    var canvas = new eurekaJS.native.Canvas(null, width, height);
     var ctx = canvas.context;
     ctx.drawImage(image, 0, 0);
 

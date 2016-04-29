@@ -132,6 +132,14 @@ this.Graphics = ns.Graphics = class Graphics {
     this._cmd.push(['a', x, y, radius, 0, 2*Math.PI]);
   }
 
+  drawRect(x, y, width, height) {
+    this.moveTo(x, y);
+    this.lineTo(x + width, y);
+    this.lineTo(x + width, y + height);
+    this.lineTo(x, y + height);
+    this.lineTo(x, y);
+  }
+
   _render (ctx, color) {
     for (var i = 0; i < this._cmd.length; ++i) {
       _applyCmd(ctx, this._cmd[i], color);

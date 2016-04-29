@@ -1,5 +1,5 @@
 import "eurekaJS/display/DisplayObjectContainer.js";
-import "eurekaJS/native/NativeCanvas.js";
+import "eurekaJS/native/Canvas.js";
 import "eurekaJS/events/Event.js";
 import "eurekaJS/events/MouseEvent.js";
 import "eurekaJS/events/KeyboardEvent.js";
@@ -11,9 +11,11 @@ this.Stage = ns.Stage = class Stage extends ns.DisplayObjectContainer {
   constructor (canvas, color, fps) {
     super();
 
-    if (!(canvas instanceof eurekaJS.native.NativeCanvas))
-      throw new Error ("Canvas is not a NativeCanvas instance");
-
+    /*
+    if (!(canvas instanceof eurekaJS.native.Canvas))
+      throw new Error ("Canvas is not a eurekaJS.native.Canvas instance");
+    */
+    
     this._canvas = canvas;
     this._ctx = this._canvas.context;
 
@@ -44,9 +46,7 @@ this.Stage = ns.Stage = class Stage extends ns.DisplayObjectContainer {
     this._canvas.style.outline = 'none';
     this._canvas.focus();
 
-    this._mouseCanvas = new eurekaJS.native.NativeCanvas();
-    this._mouseCanvas.width = this._canvas.width;
-    this._mouseCanvas.height = this._canvas.height;
+    this._mouseCanvas = new eurekaJS.native.Canvas(null, this._canvas.width, this._canvas.height);
     this._mouseCanvasCtx = this._mouseCanvas.context;
     this._mouseCanvasCtx.translate(0.5, 0.5);
 
@@ -135,7 +135,7 @@ this.Stage = ns.Stage = class Stage extends ns.DisplayObjectContainer {
     }
 
     super._render(this._mouseCanvasCtx, colors);
-    
+
     var cc = this._mouseCanvasCtx.getImageData(event.mouseX, event.mouseY, 1, 1).data;
 
     // when the click goes into an aliased place we'll get the alpha value under 255

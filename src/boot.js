@@ -138,7 +138,7 @@
   var init = function () {
     // Framework base files.
     var eurekaFiles = [
-      'eurekaJS/native/NativeCanvas.js', 
+      'eurekaJS/native/Canvas.js', 
       'eurekaJS/display/Stage.js',];
 
     // Base url of the framework files
@@ -177,7 +177,7 @@
             playground.namespace = namespace.bind(null, playground);
 
             // Bind the canvas into the framework.
-            let nativeCanvas = new playground.eurekaJS.native.NativeCanvas(canvas);
+            let nativeCanvas = new playground.eurekaJS.native.Canvas(canvas);
             // Create the stage instance.
             playground.Stage = new playground.eurekaJS.display.Stage(nativeCanvas);
 

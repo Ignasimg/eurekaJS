@@ -1,36 +1,30 @@
 import "eurekaJS/display/DisplayObjectContainer.js";
-import "eurekaJS/net/URLRequest.js";
-import "eurekaJS/net/URLLoader.js";
-import "eurekaJS/net/URLLoaderDataFormat.js";
-
-import "eurekaJS/display/BitmapData.js";
-import "eurekaJS/display/Bitmap.js";
+import "eurekaJS/display/LoaderInfo.js";
+import "eurekaJS/events/Event.js";
 
 var ns = namespace("eurekaJS.display");
 
 this.Loader = ns.Loader = class Loader extends ns.DisplayObjectContainer {
   constructor () {
     super();
-
-    this._content = null;
-    //this._contentLoaderInfo = null;
-    //this._uncaughtErrorEvents = null;
+    this._contentLoaderInfo = new LoaderInfo(this);
   }
 
   load (request) {
-    var urlLoader = new URLLoader();
-    urlLoader.dataFormat = URLLoaderDataFormat.BINARY;
-    urlLoader.addEventListener(Event.COMPLETE, e => this.loadBytes(urlLoader.data));
-    urlLoader.load(request);
+    this._contentLoaderInfo._load(request);
+    this._contentLoaderInfo.addEventListener(Event.COMPLETE, this._loadComplete.bind(this));
   }
 
   loadBytes (bytes) {
-    var bd = BitmapData._fromArrayBuffer(bytes);
-    this._content = new Bitmap(bd);
-    this.addChild(this._content);
+    this._contentLoaderInfo._loadBytes(bytes);
+    this._contentLoaderInfo.addEventListener(Event.COMPLETE, this._loadComplete.bind(this));
+  }
+
+  _loadComplete (event) {
+    this.addChild(this.content);
   }
 
   get content () {
-    return this._content;
+    return this._contentLoaderInfo.content;
   }
 }

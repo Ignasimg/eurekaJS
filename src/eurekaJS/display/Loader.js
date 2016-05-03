@@ -10,21 +10,25 @@ this.Loader = ns.Loader = class Loader extends ns.DisplayObjectContainer {
     this._contentLoaderInfo = new LoaderInfo(this);
   }
 
+  get contentLoaderInfo () {
+    return this._contentLoaderInfo;
+  }
+
+  get content () {
+    return this.contentLoaderInfo.content;
+  }
+
   load (request) {
-    this._contentLoaderInfo._load(request);
-    this._contentLoaderInfo.addEventListener(Event.COMPLETE, this._loadComplete.bind(this));
+    this.contentLoaderInfo._load(request);
+    this.contentLoaderInfo.addEventListener(Event.COMPLETE, this._loadComplete.bind(this));
   }
 
   loadBytes (bytes) {
-    this._contentLoaderInfo._loadBytes(bytes);
-    this._contentLoaderInfo.addEventListener(Event.COMPLETE, this._loadComplete.bind(this));
+    this.contentLoaderInfo._loadBytes(bytes);
+    this.contentLoaderInfo.addEventListener(Event.COMPLETE, this._loadComplete.bind(this));
   }
 
   _loadComplete (event) {
     this.addChild(this.content);
-  }
-
-  get content () {
-    return this._contentLoaderInfo.content;
   }
 }

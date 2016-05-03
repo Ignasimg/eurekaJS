@@ -10,11 +10,6 @@ var ns = namespace("eurekaJS.display");
 this.Stage = ns.Stage = class Stage extends ns.DisplayObjectContainer {
   constructor (canvas, color, fps) {
     super();
-
-    /*
-    if (!(canvas instanceof eurekaJS.native.Canvas))
-      throw new Error ("Canvas is not a eurekaJS.native.Canvas instance");
-    */
     
     this._canvas = canvas;
     this._ctx = this._canvas.context;
@@ -22,7 +17,8 @@ this.Stage = ns.Stage = class Stage extends ns.DisplayObjectContainer {
     this.width = this._canvas.width;
     this.height = this._canvas.height;
 
-    this._ctx.translate(0.5, 0.5);
+    // Right now I'm not so sure weather this should be here or not
+    //this._ctx.translate(0.5, 0.5);
 
     this.color = color || '#FFFFFF';
     this.frameRate = fps || 30;
@@ -48,14 +44,14 @@ this.Stage = ns.Stage = class Stage extends ns.DisplayObjectContainer {
 
     this._mouseCanvas = new eurekaJS.native.Canvas(null, this._canvas.width, this._canvas.height);
     this._mouseCanvasCtx = this._mouseCanvas.context;
-    this._mouseCanvasCtx.translate(0.5, 0.5);
+    //this._mouseCanvasCtx.translate(0.5, 0.5);
 
     console.info("Stage running at", this.frameRate, "fps");
   }
 
   _clear () {
-//    this._ctx.fillRect(0, 0, this._canvas.width, this._canvas.height);
-    this._ctx.fillRect(-0.5, -0.5, this._canvas.width+0.5, this._canvas.height+0.5);
+    this._ctx.fillRect(0, 0, this._canvas.width, this._canvas.height);
+//    this._ctx.fillRect(-0.5, -0.5, this._canvas.width+0.5, this._canvas.height+0.5);
   }
 
   _render () {

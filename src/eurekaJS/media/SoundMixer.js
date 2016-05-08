@@ -16,7 +16,7 @@ this.SoundMixer = ns.SoundMixer = class SoundMixer {
 
   static get _instance () {
     if (!instance) {
-      instance = {}; new SoundMixer();
+      instance = new SoundMixer();
       instance._audioContext = new AudioContext();
     }
 
@@ -35,8 +35,16 @@ this.SoundMixer = ns.SoundMixer = class SoundMixer {
     return SoundMixer._instance._audioContext.createBufferSource();
   }
 
+  static _createMediaElementSource (mediaElement) {
+    return SoundMixer._instance._audioContext.createMediaElementSource(mediaElement);
+  }
+
   static get _destination () {
     return SoundMixer._instance._audioContext.destination;
+  }
+
+  static stopAll() {
+    SoundMixer._instance._audioContext.suspend();
   }
 
 }

@@ -70,8 +70,8 @@ this.LoaderInfo = ns.LoaderInfo = class LoaderInfo extends eurekaJS.events.Event
         break;
       case ProgressEvent.PROGRESS :
         newEvent = new ProgressEvent(ProgressEvent.PROGRESS, false, false, event.loaded, event.total);
-        this._bytesTotal = event.total;
-        this._bytesLoaded += event.loaded;
+        this._bytesTotal = event.bytesTotal;
+        this._bytesLoaded = event.bytesLoaded;
         break;
       case IOErrorEvent.IO_ERROR :
         newEvent = new IOErrorEvent(IOErrorEvent.IO_ERROR, false, false, this._xhttp.responseText);

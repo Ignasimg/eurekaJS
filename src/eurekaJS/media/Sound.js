@@ -6,6 +6,41 @@ import "eurekaJS/media/SoundMixer.js";
 var ns = namespace("eurekaJS.media");
 
 this.Sound = ns.Sound = class Sound extends eurekaJS.events.EventDispatcher {
+
+  constructor (stream) {
+
+    var audio = new Audio(); 
+    audio._bytesLoaded = 0;
+    audio._bytesTotal = 0;
+
+    Object.defineProperties(audio, {
+      'bytesLoaded': {
+        get: function () {
+          return audio._bytesLoaded;
+        }
+      },
+      'bytesTotal': {
+        get: function () {
+          return audio._bytesTotal;
+        }
+      },
+      'url' : {
+        get: function () {
+          return audio.src;
+        }
+      },
+      'load' : {
+        
+      }
+    });
+
+    if (stream instanceof eurekaJS.net.URLRequest) {
+      audio.load(stream);
+    }
+
+    return audio;
+  }
+
   constructor (stream) {
     super();
 
@@ -18,6 +53,8 @@ this.Sound = ns.Sound = class Sound extends eurekaJS.events.EventDispatcher {
     this._url = null;
 
     this._buffer = null;
+
+    this._a = new Audio();
 
     if (stream instanceof eurekaJS.net.URLRequest) {
       this.load(stream);
@@ -57,8 +94,8 @@ this.Sound = ns.Sound = class Sound extends eurekaJS.events.EventDispatcher {
         break;
       case ProgressEvent.PROGRESS :
         newEvent = new ProgressEvent(ProgressEvent.PROGRESS, false, false, event.loaded, event.total);
-        this._bytesTotal = event.total;
-        this._bytesLoaded += event.loaded;
+        this._bytesTotal = event.bytesTotal;
+        this._bytesLoaded = event.bytesLoaded;
         break;
       case IOErrorEvent.IO_ERROR :
         newEvent = new IOErrorEvent(IOErrorEvent.IO_ERROR, false, false, this._xhttp.responseText);
@@ -92,10 +129,24 @@ this.Sound = ns.Sound = class Sound extends eurekaJS.events.EventDispatcher {
     events.forEach(event => urlLoader.addEventListener(event, this._eventHandler.bind(this)));
 
     urlLoader.load(stream);
+
+    /*
+
+    var a = new Audio();
+
+    var b = SoundMixer._createMediaElementSource(a);
+
+    a.src = stream.url;
+
+    b.connect(SoundMixer._destination);
+
+    a.play();
+    //b.start(0);
+    */
   }
 
   loadCompressedDataFromByteArray (bytes, bytesLength) {
-    // TODO :: use bytesLength
+    /*
     var self = this;
     SoundMixer._decodeAudioData(bytes, function (buffer) {
       self._buffer = buffer;
@@ -103,6 +154,16 @@ this.Sound = ns.Sound = class Sound extends eurekaJS.events.EventDispatcher {
       e._nextPhase();
       self.dispatchEvent(e);
     });
+    */
+
+    //var a = new Audio();
+
+    var b = SoundMixer._createMediaElementSource(this._a);
+
+    var blob = new Blob([new DataView(bytes, 0, bytesLength)], { type: "audio/mp3" });
+    this._a.src = URL.createObjectURL(blob);
+
+    b.connect(SoundMixer._destination);
   }
 
   /*
@@ -110,12 +171,12 @@ this.Sound = ns.Sound = class Sound extends eurekaJS.events.EventDispatcher {
   */
 
   play (startTime, loops, soundTransform) {
-
-    console.log(this._buffer);
-
+    this._a.play();
+/*    
     var source = SoundMixer._createBufferSource();
     source.buffer = this._buffer;
     source.connect(SoundMixer._destination);
     source.start(0);
+    */
   }
 }

@@ -7,15 +7,27 @@ this.Transform = ns.Transform = class Transform {
     return this.matrix.concat(this._displayObject.parent.transform.concatenatedMatrix);
   }
 
-  set matrix (value) {
-    this._matrix = value;
+  set matrix (mat) {
+    
+    this._matrix = new Matrix(); //mat.clone();
+    
+    
+    mat = mat.clone();
     // http://stackoverflow.com/questions/4361242/extract-rotation-scale-values-from-2d-transformation-matrix
-    // Not tested and very likely to have bugs! :o
-    this._displayObject._x = +value.tx.toFixed(16);
-    this._displayObject._y = +value.ty.toFixed(16);
-    this._displayObject._scaleX = +Math.sqrt((value.a*value.a) + (value.c*value.c)).toFixed(16);
-    this._displayObject._scaleY = +Math.sqrt((value.b*value.b) + (value.d*value.d)).toFixed(16);
-    this._displayObject._rotation = +Math.atan(value.b/value.a).toFixed(16);
+    // Slightly modifies and tested, but might still have bugs.
+    
+    // We must update the public values setters, to avoid coupling with the inner structure,
+    // since those setters already update the matrix we setted the transformation matrix to a new and empty one.
+    this._displayObject.x = +mat.tx.toFixed(16);
+    this._displayObject.y = +mat.ty.toFixed(16);
+    //this._displayObject.scaleX = Math.sign(mat.a)*Math.sqrt((mat.a*mat.a) + (mat.c*mat.c)).toFixed(16);
+    //this._displayObject.scaleY = Math.sign(mat.d)*Math.sqrt((mat.b*mat.b) + (mat.d*mat.d)).toFixed(16);
+    this._displayObject.scaleX = Math.sign(mat.a)*Math.sqrt((mat.a*mat.a) + (mat.b*mat.b)).toFixed(16);
+    this._displayObject.scaleY = Math.sign(mat.d)*Math.sqrt((mat.c*mat.c) + (mat.d*mat.d)).toFixed(16);
+    this._displayObject.rotation = +(Math.atan(mat.b/mat.a).toFixed(16)*180/Math.PI);
+    
+    
+    console.log(mat, this._matrix);
   }
 
   get matrix () {
@@ -25,7 +37,7 @@ this.Transform = ns.Transform = class Transform {
   static _newTransform (displayObject) {
     var a = new Transform();
     a._displayObject = displayObject;
-    a.matrix = new Matrix();
+    a._matrix = new Matrix();
     return a;
   }
 }

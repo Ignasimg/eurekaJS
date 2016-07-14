@@ -9,6 +9,13 @@ this.Bitmap = ns.Bitmap = class Bitmap extends ns.DisplayObject {
     super();
     this.bitmapData = bitmapData || new BitmapData(0, 0);
   }
+  
+  _updateSizes() {
+    var graphicsBB = this._graphics._bb.clone();
+    graphicsBB.offset(this.x, this.y);
+    this._bb.width = this.bitmapData.width;
+    this._bb.height = this.bitmapData.height;
+  }
 
   _render (ctx, colors) {
     if (this.bitmapData) {

@@ -7,6 +7,7 @@ var ns = namespace("eurekaJS.media");
 
 this.Sound = ns.Sound = class Sound extends eurekaJS.events.EventDispatcher {
 
+  /*
   constructor (stream) {
 
     var audio = new Audio(); 
@@ -33,13 +34,14 @@ this.Sound = ns.Sound = class Sound extends eurekaJS.events.EventDispatcher {
         
       }
     });
-
+    
     if (stream instanceof eurekaJS.net.URLRequest) {
       audio.load(stream);
     }
 
     return audio;
   }
+  */
 
   constructor (stream) {
     super();

@@ -11,6 +11,12 @@ this.Shape = ns.Shape = class Shape extends DisplayObject {
   get graphics () {
     return this._graphics;
   }
+  
+  _updateSizes() {
+    var graphicsBB = this._graphics._bb.clone();
+    graphicsBB.offset(this.x, this.y);
+    this._bb = this._bb.union(graphicsBB);
+  }
 
   _render (ctx, colors) {
     if (colors)

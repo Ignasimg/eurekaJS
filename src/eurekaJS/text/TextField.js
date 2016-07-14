@@ -1,5 +1,6 @@
 import "eurekaJS/display/DisplayObject.js";
-import "eurekaJS/native/NativeCanvas.js";
+import "eurekaJS/display/Color.js";
+import "eurekaJS/native/Canvas.js";
 import "eurekaJS/text/TextBaseline.js";
 import "eurekaJS/text/TextAlign.js";
 
@@ -11,7 +12,8 @@ this.TextField = ns.TextField = class TextField extends DisplayObject {
     
     this._text = "";
     this._font = 'Comic Sans MS'
-    this._color = '#000000';
+    //this._color = '#000000';
+    this.textColor = 'Black';
     this._baseline = eurekaJS.text.TextBaseline.TOP;
     this._align = eurekaJS.text.TextAlign.LEFT;
     this._bold = false;
@@ -21,7 +23,7 @@ this.TextField = ns.TextField = class TextField extends DisplayObject {
 
     this._width = 0;
 
-    this._helperCanvas = new eurekaJS.native.NativeCanvas();
+    this._helperCanvas = new eurekaJS.native.Canvas();
     this._helperCanvasCtx = this._helperCanvas.context;
   }
 
@@ -76,7 +78,7 @@ this.TextField = ns.TextField = class TextField extends DisplayObject {
                  ((this._italic) ? 'italic ' : '') +
                  this._size+'px ' +
                  this._font;
-      ctx.fillStyle = color || this._color;
+      ctx.fillStyle = 'rgba(255,0,0,1)'; //color || this._color;
       ctx.textAlign = this._align;
       ctx.textBaseline = this._baseline;
       ctx.fillText(this._text, 0, 0);

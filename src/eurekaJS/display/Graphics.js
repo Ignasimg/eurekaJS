@@ -1,22 +1,7 @@
+import "eurekaJS/geom/Rectangle.js";
+import "eurekaJS/display/Color.js";
+
 var ns = namespace("eurekaJS.display");
-
-// Private functions which don't depend on the state of the object.
-function _hexToRGB (hex) {
-  
-  // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
-  var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-  hex = hex.replace(shorthandRegex, function(m, r, g, b) {
-      return r + r + g + g + b + b;
-  });
-
-  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-
-  return result ? {
-      R: parseInt(result[1], 16),
-      G: parseInt(result[2], 16),
-      B: parseInt(result[3], 16)
-  } : null;
-}
 
 function _applyCmd (ctx, cmd, color) {
   switch (cmd[0]) {
@@ -68,26 +53,37 @@ function _applyCmd (ctx, cmd, color) {
 this.Graphics = ns.Graphics = class Graphics {
   constructor () {
     this._cmd = [];
+    this._bb = new eurekaJS.geom.Rectangle();
     this._shapeStarted = false;
     this._fillStarted = false;
     this._strokeStarted = false;
+    
+    this._xx = 0;
+    this._yy = 0;
   }
 
   copyFrom (original) {
     if (!(original instanceof eurekaJS.display.Graphics))
       throw new TypeError("Graphics::copyFrom expects Graphics");
     this._cmd = JSON.parse(JSON.stringify(original._cmd));
+    this._shapeStarted = original._shapeStarted;
+    this._fillStarted = original._fillStarted;
+    this._strokeStarted = original._strokeStarted;
+    this._bb = original._bb.clone();
+    this._xx = original._xx;
+    this._yy = original._yy;
   }
   
   clear () {
     this._cmd = [];
+    this._bb.setEmpty();
   }
 
   beginFill (color, alpha) {
     this._fillStarted = true;
     color = color || '#000000';
     alpha = alpha || 1;
-    var RGB = _hexToRGB(color);
+    var RGB = eurekaJS.display.Color.getComponents(color);
     this._cmd.push(['fS', 'rgba('+RGB.R+','+RGB.G+','+RGB.B+','+alpha+')']);
   }
 
@@ -101,6 +97,9 @@ this.Graphics = ns.Graphics = class Graphics {
   moveTo (x, y) {
     this._helperBeginPath();
     this._cmd.push(['mT', x, y]);
+    
+    this._xx = x;
+    this._yy = y;
   }
   
   lineTo (x, y) {
@@ -108,7 +107,9 @@ this.Graphics = ns.Graphics = class Graphics {
       this._shapeStarted = true;
       this._cmd.push(['bP']);
     }
-
+    
+    this._bb = this._bb.union(new eurekaJS.geom.Rectangle(this._xx, this._yy, x-this._xx, y-this._yy))
+    this._xx = x;    this._yy = y;
     this._cmd.push(['lT', x, y]);
   }
 
@@ -122,7 +123,7 @@ this.Graphics = ns.Graphics = class Graphics {
     thickness = thickness || 1;
     color = color || '#000000';
     alpha = alpha || 1;
-    var RGB = _hexToRGB(color);
+    var RGB = eurekaJS.display.Color.getComponents(color);
     this._cmd.push(['sS', 'rgba('+RGB.R+','+RGB.G+','+RGB.B+','+alpha+')']);
     this._cmd.push(['lW', thickness]);
   }
@@ -130,6 +131,7 @@ this.Graphics = ns.Graphics = class Graphics {
   drawCircle (x, y, radius) {
     this._helperBeginPath();
     this._cmd.push(['a', x, y, radius, 0, 2*Math.PI]);
+    this._bb = this._bb.union(new eurekaJS.geom.Rectangle(x-radius, y-radius, x+radius, y+radius));
   }
 
   drawRect(x, y, width, height) {

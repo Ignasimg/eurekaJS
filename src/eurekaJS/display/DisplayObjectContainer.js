@@ -1,4 +1,5 @@
 import "eurekaJS/display/DisplayObject.js";
+import "eurekaJS/geom/Rectangle.js";
 
 var ns = namespace("eurekaJS.display");
 
@@ -7,11 +8,60 @@ this.DisplayObjectContainer = ns.DisplayObjectContainer = class DisplayObjectCon
     super();
 
     if (this.constructor === DisplayObjectContainer)
-      throw new Error("DisplayObject can't be instantiated");
+      throw new Error("DisplayObjectContainer can't be instantiated");
 
     this._displayList = [];
   }
-
+  
+  _updateSizes() {
+    this._bb = new eurekaJS.geom.Rectangle(this.x, this.y);
+    for (var i = 0; i < this._displayList.length; ++i) {
+      var isContainer = this._displayList[i] instanceof eurekaJS.display.DisplayObjectContainer;
+      if (isContainer) {
+        this._displayList[i]._updateSizes();
+      }
+      var childBB = this._displayList[i]._bb.clone();
+      childBB.offset(this.x, this.y);
+      this._bb = this._bb.union(childBB);
+    }
+  }
+  /*
+  get x () {
+    this._updateSizes();
+    return super.x;
+  }
+  
+  set x (v) {
+    return super.x = v;
+  }
+  
+  get y () {
+    this._updateSizes();
+    return super.y;
+  }
+  
+  set y (v) {
+    return super.y = v;
+  }
+  */
+  get width () {
+    this._updateSizes();
+    return super.width;
+  }
+  
+  set width (v) {
+    return super.width = v;
+  }
+  
+  get height () {
+    this._updateSizes();
+    return super.height;
+  }
+  
+  set height (v) {
+    return super.height = v;
+  }
+  
   addChild (displayObject) {
     this.addChildAt(displayObject, this.numChild);
   }
@@ -98,6 +148,7 @@ this.DisplayObjectContainer = ns.DisplayObjectContainer = class DisplayObjectCon
   swapChildren (child1, child2) {
     var index1 = this.getChildIndex(child1);
     var index2 = this.getChildIndex(child2);
+    this.swapChildrenAt(index1, index2);
   }
 
   swapChildrenAt (index1, index2) {

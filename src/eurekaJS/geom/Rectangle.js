@@ -15,7 +15,7 @@ this.Rectangle = ns.Rectangle = class Rectangle {
   }
 
   set bottom (v) {
-    this.y = v - this.height;
+    this.height = v - this.y;
   }
 
   get bottomRight () {
@@ -40,7 +40,7 @@ this.Rectangle = ns.Rectangle = class Rectangle {
   }
 
   set right (v) {
-    this.x = v - this.width;
+    this.width = v - this.x;
   }
 
   get size () {
@@ -130,7 +130,8 @@ this.Rectangle = ns.Rectangle = class Rectangle {
   }
 
   isEmpty () {
-    return (this.width <= 0) || (this.height <= 0);
+    return (this.width <= 0) && (this.height <= 0);
+    //return (this.width == 0) && (this.height == 0);
   }
 
   offset (dx, dy) {
@@ -162,17 +163,18 @@ this.Rectangle = ns.Rectangle = class Rectangle {
 
   union (toUnion) {
     // TODO :: need to test
-    if (this.isEmpty) 
+    /*
+    if (this.isEmpty()) 
       return toUnion.clone();
 
-    if (toUnion.isEmpty)
+    if (toUnion.isEmpty())
       return this.clone();
-
+    */
     var r = new Rectangle();
-    r.top = Math.max(this.top, toIntersect.top);
-    r.left = Math.max(this.left, toIntersect.left);
-    r.width = Math.max(this.right, toIntersect.right) - r.left;
-    r.height = Math.max(this.bottom, toIntersect.bottom) - r.top;
+    r.x = Math.min(this.x, toUnion.x);
+    r.y = Math.min(this.y, toUnion.y);
+    r.width = Math.max(this.x + this.width, toUnion.x + toUnion.width) - r.x;
+    r.height = Math.max(this.y + this.height, toUnion.y + toUnion.height) - r.y;
     return r;
   }
 }

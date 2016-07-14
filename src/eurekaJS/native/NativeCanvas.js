@@ -1,3 +1,4 @@
+/*
 "use strict";
 
 var ns = namespace("eurekaJS.native");
@@ -51,3 +52,4 @@ ns.NativeCanvas = class NativeCanvas {
     return this.element.focus();
   }
 }
+*/

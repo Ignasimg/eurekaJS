@@ -12,6 +12,16 @@ this.Sprite = ns.Sprite = class Sprite extends ns.DisplayObjectContainer {
   get graphics () {
     return this._graphics;
   }
+  
+  _updateSizes() {
+    super._updateSizes();
+    var graphicsBB = this._graphics._bb.clone();
+    graphicsBB.offset(this.x, this.y);
+    this._bb = this._bb.union(graphicsBB);
+    
+    //if (this._bb.width < this._graphics._bb.width) this._bb.width = this._graphics._bb.width;
+    //if (this._bb.height < this._graphics._bb.height) this._bb.height = this._graphics._bb.height;
+  }
 
   _render (ctx, colors) {
     if (colors)

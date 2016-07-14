@@ -6,7 +6,7 @@ this.EventDispatcher = ns.EventDispatcher = class EventDispatcher {
   constructor () {
 
     if (this.constructor === EventDispatcher)
-      throw new Error("DisplayObject can't be instantiated");
+      throw new Error("EventDispatcher can't be instantiated");
 
     this._listeners = {};
   }

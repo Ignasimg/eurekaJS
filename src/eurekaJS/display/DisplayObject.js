@@ -1,5 +1,6 @@
 import "eurekaJS/events/EventDispatcher.js"
 import "eurekaJS/geom/Transform.js"
+import "eurekaJS/geom/Rectangle.js"
 
 var ns = namespace("eurekaJS.display");
 
@@ -9,16 +10,11 @@ this.DisplayObject = ns.DisplayObject = class DisplayObject extends eurekaJS.eve
 
     if (this.constructor === DisplayObject)
       throw new Error("DisplayObject can't be instantiated");
-
+   
     this.name = "";
-
-    this.transform = Transform._newTransform(this);
-
-    this.x = x || 0;
-    this.y = y || 0;
-
-    this.width = width || 0;
-    this.height = height || 0;
+    
+    this._bb = new eurekaJS.geom.Rectangle(x || 0, y || 0, width || 0, height || 0);
+    
     this.visible = visible || true;
 
     this._scaleX = 1;
@@ -28,33 +24,58 @@ this.DisplayObject = ns.DisplayObject = class DisplayObject extends eurekaJS.eve
 
     this._rotation = 0;
 
+    this.transform = Transform._newTransform(this);
+    
     this._stage = null;
     this._parent = null;
+    /*    
+    this.x = x || 0;
+    this.y = y || 0;
+
+    this.width = width || 0;
+    this.height = height || 0;
+    */
   }
 
   _updateTransform () {
     this.transform.matrix.identity();
-    this.transform.matrix.translate(this._x, this._y);
+    this.transform.matrix.translate(this._bb.x, this._bb.y);
     this.transform.matrix.rotate(this._rotation);
     this.transform.matrix.scale(this._scaleX, this._scaleY);
   }
 
   set x (value) {
-    this._x = value;
+    this._bb.x = value;
     this._updateTransform();
   }
 
   get x () {
-    return this._x;
+    return this._bb.x;
   }
 
   set y (value) {
-    this._y = value;
+    this._bb.y = value;
     this._updateTransform();
   }
 
   get y () {
-    return this._y;
+    return this._bb.y;
+  }
+  
+  get width () {
+    return this._bb.width;
+  }
+  
+  set width (v) {
+    console.error('TODO :: DisplayObject:Set width()');
+  }
+  
+  get height () {
+    return this._bb.height;
+  }
+  
+  set height (v) {
+    console.error('TODO :: DisplayObject:Set height()');
   }
 
   set scaleX (value) {

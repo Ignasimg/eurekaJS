@@ -48,6 +48,22 @@ this.Stage = ns.Stage = class Stage extends ns.DisplayObjectContainer {
 
     console.info("Stage running at", this.frameRate, "fps");
   }
+  
+  get width () {
+    return this._bb.width;
+  }
+  
+  set width (v) {
+    this._bb.width = v;
+  }
+  
+  get height () {
+    return this._bb.height;
+  }
+  
+  set height (v) {
+    this._bb.height = v;
+  }
 
   _clear () {
     this._ctx.fillRect(0, 0, this._canvas.width, this._canvas.height);

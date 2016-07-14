@@ -12,7 +12,6 @@ this.TextField = ns.TextField = class TextField extends DisplayObject {
     
     this._text = "";
     this._font = 'Comic Sans MS'
-    //this._color = '#000000';
     this.textColor = 'Black';
     this._baseline = eurekaJS.text.TextBaseline.TOP;
     this._align = eurekaJS.text.TextAlign.LEFT;
@@ -78,7 +77,8 @@ this.TextField = ns.TextField = class TextField extends DisplayObject {
                  ((this._italic) ? 'italic ' : '') +
                  this._size+'px ' +
                  this._font;
-      ctx.fillStyle = 'rgba(255,0,0,1)'; //color || this._color;
+      var RGB = eurekaJS.display.Color.getComponents(this._color);
+      ctx.fillStyle = 'rgba('+RGB.R+','+RGB.G+','+RGB.B+',1)';
       ctx.textAlign = this._align;
       ctx.textBaseline = this._baseline;
       ctx.fillText(this._text, 0, 0);

@@ -28,13 +28,6 @@ this.DisplayObject = ns.DisplayObject = class DisplayObject extends eurekaJS.eve
     
     this._stage = null;
     this._parent = null;
-    /*    
-    this.x = x || 0;
-    this.y = y || 0;
-
-    this.width = width || 0;
-    this.height = height || 0;
-    */
   }
 
   _updateTransform () {
@@ -63,19 +56,19 @@ this.DisplayObject = ns.DisplayObject = class DisplayObject extends eurekaJS.eve
   }
   
   get width () {
-    return this._bb.width;
+    return this._bb.width * this.scaleX;
   }
   
   set width (v) {
-    console.error('TODO :: DisplayObject:Set width()');
+    this.scaleX = v / this._bb.width;
   }
   
   get height () {
-    return this._bb.height;
+    return this._bb.height * this.scaleY;
   }
   
   set height (v) {
-    console.error('TODO :: DisplayObject:Set height()');
+    this.scaleY = v / this._bb.height;
   }
 
   set scaleX (value) {
